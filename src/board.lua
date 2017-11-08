@@ -1,4 +1,5 @@
 local Cell = require "src.cell"
+local Piece = require "src.piece"
 local kalis = require "lib.kalis"
 
 local Board = {}
@@ -8,7 +9,8 @@ function Board:new(width, height, cell_size, start_of_board)
         start_of_board = start_of_board,
         cell_size = cell_size,
         width = width,
-        height = height
+        height = height,
+        pieces = {}
     }
 
     -- Set cells
@@ -19,6 +21,8 @@ function Board:new(width, height, cell_size, start_of_board)
                                  cell_size)
         end
     end
+
+    table.insert(obj.pieces, Piece:new(obj, {{x = 5, y = 5}}, {255, 120, 0}))
 
     setmetatable(obj, self)
     self.__index = self
@@ -64,6 +68,9 @@ function Board:mouseToBoard(mouse_x, mouse_y)
 end
 
 function Board:draw()
+    for _, piece in ipairs(self.pieces) do
+        piece:draw()
+    end
     for cell in self:cells() do
         cell:draw()
     end

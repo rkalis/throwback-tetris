@@ -20,7 +20,12 @@ function Cell:drawSprite(sprite)
     love.graphics.draw(sprite, self.x, self.y, 0, self.size / 120)
 end
 
-function Cell:draw()
+function Cell:draw(colour)
+    if colour then
+        love.graphics.setColor(colour)
+        love.graphics.rectangle("fill", self.x, self.y, self.size, self.size)
+    end
+
     love.graphics.setColor(100,100,100)
     love.graphics.rectangle("line", self.x, self.y, self.size, self.size)
     love.graphics.setColor(255,255,255)
