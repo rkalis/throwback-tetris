@@ -14,6 +14,12 @@ function Piece:new(board, coordinates, colour)
     return obj
 end
 
+function Piece:step()
+    for i = 1, #self.coordinates do
+        self.coordinates[i].y = self.coordinates[i].y + 1
+    end
+end
+
 function Piece:draw()
     for _, coordinate in ipairs(self.coordinates) do
         local cell = self.board:getCell(coordinate.x, coordinate.y)

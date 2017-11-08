@@ -4,6 +4,55 @@ local kalis = require "lib.kalis"
 
 local Board = {}
 
+local coordinatesList = {
+    {
+        {x = 3, y = 0},
+        {x = 4, y = 0},
+        {x = 5, y = 0},
+        {x = 6, y = 0}
+    },
+    {
+        {x = 3, y = 0},
+        {x = 4, y = 0},
+        {x = 5, y = 0},
+        {x = 3, y = 1}
+    },
+    {
+        {x = 3, y = 0},
+        {x = 4, y = 0},
+        {x = 5, y = 0},
+        {x = 5, y = 1}
+    },
+    {
+        {x = 3, y = 0},
+        {x = 4, y = 0},
+        {x = 5, y = 0},
+        {x = 4, y = 1}
+    },
+    {
+        {x = 4, y = 0},
+        {x = 5, y = 0},
+        {x = 3, y = 1},
+        {x = 4, y = 1}
+    },
+    {
+        {x = 3, y = 0},
+        {x = 4, y = 0},
+        {x = 4, y = 1},
+        {x = 5, y = 1}
+    },
+    {
+        {x = 4, y = 0},
+        {x = 5, y = 0},
+        {x = 4, y = 1},
+        {x = 5, y = 1}
+    }
+}
+
+local coloursList = {
+    {255, 120, 0}
+}
+
 function Board:new(width, height, cell_size, start_of_board)
     local obj = {
         start_of_board = start_of_board,
@@ -22,11 +71,23 @@ function Board:new(width, height, cell_size, start_of_board)
         end
     end
 
-    table.insert(obj.pieces, Piece:new(obj, {{x = 5, y = 5}}, {255, 120, 0}))
-
     setmetatable(obj, self)
     self.__index = self
+
+    obj:newPiece()
+
     return obj
+end
+
+function Board:newPiece()
+    table.insert(
+        self.pieces,
+        Piece:new(
+            self,
+            coordinatesList[math.random(#coordinatesList)],
+            coloursList[math.random(#coloursList)]
+        )
+    )
 end
 
 -- Iterator over all cells in board
@@ -65,6 +126,12 @@ function Board:mouseToBoard(mouse_x, mouse_y)
     local board_y = math.floor((mouse_y - self.start_of_board) / self.cell_size)
     local board_x = math.floor(mouse_x / self.cell_size)
     return board_x, board_y
+end
+
+function Board:step()
+    for _, piece in ipairs(self.pieces) do
+        piece:step()
+    end
 end
 
 function Board:draw()

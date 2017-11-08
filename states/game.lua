@@ -6,6 +6,11 @@ end
 
 function game:update(dt)
     self.game.time = self.game.time + dt
+    self.game.interval_time = self.game.interval_time + dt
+    if self.game.interval_time > self.game.step_interval then
+        self.game.interval_time = 0
+        self.game.board:step()
+    end
 end
 
 function game:draw()
