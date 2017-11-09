@@ -8,20 +8,31 @@ function Piece:new(board, coordinates, colour)
         colour = colour
     }
     print(coordinates[1].x, coordinates[1].y)
-    print(colour[1], colour[2], colour[3])
     setmetatable(obj, self)
     self.__index = self
     return obj
 end
 
 function Piece:willCollide(other, direction)
+    if self == other then return false end
     for _, coord in ipairs(self.coordinates) do
+        local next_coord = kalis.copy(coord)
+        next_coord[direction] = next_coord[direction] + 1
+        local prev_coord = kalis.copy(coord)
+        prev_coord[direction] = prev_coord[direction] - 1
         for _, other_coord in ipairs(other.coordinates) do
-            if coord[direction] + 1 == other_coord[direction]
-            or coord[direction] - 1 == other_coord[direction] then
+            if kalis.equals(next_coord, other_coord) or
+               kalis.equals(prev_coord, other_coord) then
                 return true
             end
         end
+    end
+    return false
+end
+
+function Piece:willCollideAny(others, direction)
+    for _, other in ipairs(others) do
+        if self:willCollide(other, direction) then return true end
     end
     return false
 end

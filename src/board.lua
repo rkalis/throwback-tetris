@@ -97,17 +97,17 @@ function Board:new(width, height, cell_size, start_of_board)
     setmetatable(obj, self)
     self.__index = self
 
-    obj:newPiece()
-
     return obj
 end
 
 function Board:newPiece()
+    local coordinates = kalis.copy(
+        coordinatesList[math.random(#coordinatesList)])
     table.insert(
         self.pieces,
         Piece:new(
             self,
-            coordinatesList[math.random(#coordinatesList)],
+            coordinates,
             coloursList[math.random(#coloursList)]
         )
     )
@@ -152,11 +152,15 @@ function Board:mouseToBoard(mouse_x, mouse_y)
 end
 
 function Board:step()
+    local has_moved = false
     for _, piece in ipairs(self.pieces) do
-        if not piece:willCollide(self.bounds.bottom, 'y') then
+        if not piece:willCollide(self.bounds.bottom, 'y') and
+           not piece:willCollideAny(self.pieces, 'y') then
             piece:step()
+            has_moved = true
         end
     end
+    if not has_moved then self:newPiece() end
 end
 
 function Board:draw()
