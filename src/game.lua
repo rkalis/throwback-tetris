@@ -25,12 +25,6 @@ function Game:new()
     return obj
 end
 
-function Game:start(cell)
-    self.board:placeMines(cell, self.total_mines)
-    self.start_time = love.timer.getTime()
-    return self
-end
-
 function Game:reset()
     self = Game:new()
     return self
