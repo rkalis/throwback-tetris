@@ -113,6 +113,10 @@ function Board:newPiece()
     )
 end
 
+function Board:getActivePiece()
+    return self.pieces[#self.pieces]
+end
+
 -- Iterator over all cells in board
 function Board:cells()
     return coroutine.wrap(
@@ -153,9 +157,10 @@ end
 
 function Board:step()
     local has_moved = false
-    for _, piece in ipairs(self.pieces) do
-        if not piece:willCollide(self.bounds.bottom, 'y') and
-           not piece:willCollideAny(self.pieces, 'y') then
+    local piece = self:getActivePiece()
+    if piece then
+        if not piece:willCollide(self.bounds.bottom, 'y', 1) and
+           not piece:willCollideAny(self.pieces, 'y', 1) then
             piece:step()
             has_moved = true
         end

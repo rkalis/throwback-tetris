@@ -13,16 +13,13 @@ function Piece:new(board, coordinates, colour)
     return obj
 end
 
-function Piece:willCollide(other, direction)
+function Piece:willCollide(other, direction, side)
     if self == other then return false end
     for _, coord in ipairs(self.coordinates) do
         local next_coord = kalis.copy(coord)
-        next_coord[direction] = next_coord[direction] + 1
-        local prev_coord = kalis.copy(coord)
-        prev_coord[direction] = prev_coord[direction] - 1
+        next_coord[direction] = next_coord[direction] + side
         for _, other_coord in ipairs(other.coordinates) do
-            if kalis.equals(next_coord, other_coord) or
-               kalis.equals(prev_coord, other_coord) then
+            if kalis.equals(next_coord, other_coord) then
                 return true
             end
         end
@@ -30,9 +27,9 @@ function Piece:willCollide(other, direction)
     return false
 end
 
-function Piece:willCollideAny(others, direction)
+function Piece:willCollideAny(others, direction, side)
     for _, other in ipairs(others) do
-        if self:willCollide(other, direction) then return true end
+        if self:willCollide(other, direction, side) then return true end
     end
     return false
 end
