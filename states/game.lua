@@ -25,9 +25,15 @@ function game:keypressed(key)
     if key == 'space' then
         self.game.board:skip()
     end
+    if key == 'down' then
+        self.game.step_interval = self.game.step_interval / 10
+    end
 end
 
 function game:keyreleased(key)
+    if key == 'down' then
+        self.game.step_interval = self.game.step_interval * 10
+    end
 end
 
 return game

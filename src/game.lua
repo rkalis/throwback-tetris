@@ -8,7 +8,7 @@ function Game:new()
     local obj = {
         start_time = 0,
         time = 0,
-        step_interval = 0.1,
+        step_interval = 1,
         step_interval_time = 0,
         move_interval = 0.1,
         move_interval_time = 0,
