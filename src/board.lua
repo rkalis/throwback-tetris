@@ -155,13 +155,23 @@ function Board:mouseToBoard(mouse_x, mouse_y)
     return board_x, board_y
 end
 
-function Board:step()
+function Board:move(direction, side)
+    local piece = self:getActivePiece()
+    if piece then
+        if not piece:willCollideAny(self.bounds, direction, side) and
+           not piece:willCollideAny(self.pieces, direction, side) then
+            piece:step(direction, side)
+        end
+    end
+end
+
+function Board:step(direction, side)
     local has_moved = false
     local piece = self:getActivePiece()
     if piece then
-        if not piece:willCollide(self.bounds.bottom, 'y', 1) and
-           not piece:willCollideAny(self.pieces, 'y', 1) then
-            piece:step()
+        if not piece:willCollideAny(self.bounds, direction, side) and
+           not piece:willCollideAny(self.pieces, direction, side) then
+            piece:step(direction, side)
             has_moved = true
         end
     end
@@ -173,7 +183,7 @@ function Board:skip()
     if piece then
         while not piece:willCollide(self.bounds.bottom, 'y', 1) and
               not piece:willCollideAny(self.pieces, 'y', 1) do
-            piece:step()
+            piece:step('y', 1)
         end
     end
     self:newPiece()

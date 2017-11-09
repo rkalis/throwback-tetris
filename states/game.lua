@@ -11,10 +11,18 @@ function game:update(dt)
 
     if self.game.step_interval_time > self.game.step_interval then
         self.game.step_interval_time = 0
-        self.game.board:step()
+        self.game.board:step('y', 1)
     end
 
-    self.game.board:update(dt)
+    if self.game.move_interval_time > self.game.move_interval then
+        self.game.move_interval_time = 0
+        if love.keyboard.isDown('left') == love.keyboard.isDown('right') then
+        elseif love.keyboard.isDown('left') then
+            self.game.board:move('x', -1)
+        elseif love.keyboard.isDown('right') then
+            self.game.board:move('x', 1)
+        end
+    end
 end
 
 function game:draw()

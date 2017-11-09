@@ -28,15 +28,15 @@ function Piece:willCollide(other, direction, side)
 end
 
 function Piece:willCollideAny(others, direction, side)
-    for _, other in ipairs(others) do
+    for _, other in pairs(others) do
         if self:willCollide(other, direction, side) then return true end
     end
     return false
 end
 
-function Piece:step()
+function Piece:step(direction, side)
     for i = 1, #self.coordinates do
-        self.coordinates[i].y = self.coordinates[i].y + 1
+        self.coordinates[i][direction] = self.coordinates[i][direction] + side
     end
 end
 
