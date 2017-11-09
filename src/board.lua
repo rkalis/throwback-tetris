@@ -168,6 +168,20 @@ function Board:step()
     if not has_moved then self:newPiece() end
 end
 
+function Board:skip()
+    local piece = self:getActivePiece()
+    if piece then
+        while not piece:willCollide(self.bounds.bottom, 'y', 1) and
+              not piece:willCollideAny(self.pieces, 'y', 1) do
+            piece:step()
+        end
+    end
+    self:newPiece()
+end
+
+function Board:update(dt)
+end
+
 function Board:draw()
     for _, piece in ipairs(self.pieces) do
         piece:draw()
