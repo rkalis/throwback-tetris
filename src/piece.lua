@@ -14,6 +14,18 @@ function Piece:new(board, coordinates, colour)
     return obj
 end
 
+function Piece:willCollide(other, direction)
+    for _, coord in ipairs(self.coordinates) do
+        for _, other_coord in ipairs(other.coordinates) do
+            if coord[direction] + 1 == other_coord[direction]
+            or coord[direction] - 1 == other_coord[direction] then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 function Piece:step()
     for i = 1, #self.coordinates do
         self.coordinates[i].y = self.coordinates[i].y + 1

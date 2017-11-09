@@ -59,8 +59,31 @@ function Board:new(width, height, cell_size, start_of_board)
         cell_size = cell_size,
         width = width,
         height = height,
-        pieces = {}
+        pieces = {},
+        bounds = {
+            bottom = {
+                coordinates = {}
+            },
+            top = {
+                coordinates = {}
+            },
+            left = {
+                coordinates = {}
+            },
+            right = {
+                coordinates = {}
+            }
+        }
     }
+
+    for i = 0, width - 1 do
+        table.insert(obj.bounds.bottom.coordinates, {x = i, y = height})
+        -- table.insert(obj.bounds.top, {x = i, y = -1})
+    end
+    for i = 0, height - 1 do
+        table.insert(obj.bounds.left.coordinates, {x = -1, y = i})
+        table.insert(obj.bounds.right.coordinates, {x = width, y = i})
+    end
 
     -- Set cells
     for i = 0, height - 1 do
@@ -130,7 +153,9 @@ end
 
 function Board:step()
     for _, piece in ipairs(self.pieces) do
-        piece:step()
+        if not piece:willCollide(self.bounds.bottom, 'y') then
+            piece:step()
+        end
     end
 end
 

@@ -8,7 +8,7 @@ function Game:new()
     local obj = {
         start_time = 0,
         time = 0,
-        step_interval = 1,
+        step_interval = 0.2,
         interval_time = 0,
         difficulty = "medium",
         -- highscores = Highscores:new("highscores_easy.txt",
