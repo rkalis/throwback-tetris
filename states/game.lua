@@ -16,6 +16,7 @@ function game:update(dt)
 
     if self.game.move_interval_time > self.game.move_interval then
         self.game.move_interval_time = 0
+
         if love.keyboard.isDown('left') == love.keyboard.isDown('right') then
         elseif love.keyboard.isDown('left') then
             self.game.board:move('x', -1)
@@ -32,9 +33,12 @@ end
 function game:keypressed(key)
     if key == 'space' then
         self.game.board:skip()
-    end
-    if key == 'down' then
+    elseif key == 'down' then
         self.game.step_interval = self.game.step_interval / 10
+    elseif key == 'up' then
+        if self.game.board:getActivePiece():canRotate(1) then
+            self.game.board:getActivePiece():rotate(1)
+        end
     end
 end
 

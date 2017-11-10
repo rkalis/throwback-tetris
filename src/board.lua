@@ -78,7 +78,7 @@ function Board:new(width, height, cell_size, start_of_board)
 
     for i = 0, width - 1 do
         table.insert(obj.bounds.bottom.coordinates, {x = i, y = height})
-        -- table.insert(obj.bounds.top, {x = i, y = -1})
+        table.insert(obj.bounds.top.coordinates, {x = i, y = -1})
     end
     for i = 0, height - 1 do
         table.insert(obj.bounds.left.coordinates, {x = -1, y = i})
@@ -160,7 +160,7 @@ function Board:move(direction, side)
     if piece then
         if not piece:willCollideAny(self.bounds, direction, side) and
            not piece:willCollideAny(self.pieces, direction, side) then
-            piece:step(direction, side)
+            piece:move(direction, side)
         end
     end
 end
@@ -171,7 +171,7 @@ function Board:step(direction, side)
     if piece then
         if not piece:willCollideAny(self.bounds, direction, side) and
            not piece:willCollideAny(self.pieces, direction, side) then
-            piece:step(direction, side)
+            piece:move(direction, side)
             has_moved = true
         end
     end
@@ -183,7 +183,7 @@ function Board:skip()
     if piece then
         while not piece:willCollide(self.bounds.bottom, 'y', 1) and
               not piece:willCollideAny(self.pieces, 'y', 1) do
-            piece:step('y', 1)
+            piece:move('y', 1)
         end
     end
     self:newPiece()
