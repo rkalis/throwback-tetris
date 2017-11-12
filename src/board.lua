@@ -50,7 +50,16 @@ local coordinatesList = {
 }
 
 local coloursList = {
-    {255, 120, 0}
+    {255, 120, 0},
+    {120, 120, 0},
+    {255, 120, 255},
+    {0, 120, 255},
+    {120, 120, 255},
+    {100, 120, 50},
+    -- {255, 120, 0},
+    -- {255, 120, 0},
+    -- {255, 120, 0},
+    -- {255, 120, 0}
 }
 
 function Board:new(width, height, cell_size, start_of_board)
@@ -171,22 +180,76 @@ function Board:step(direction, side)
     if piece then
         if not piece:willCollideAny(self.bounds, direction, side) and
            not piece:willCollideAny(self.pieces, direction, side) then
+
             piece:move(direction, side)
             has_moved = true
         end
     end
-    if not has_moved then self:newPiece() end
+
+    if not has_moved then
+        self:checkLines()
+        self:newPiece()
+    end
 end
 
-function Board:skip()
-    local piece = self:getActivePiece()
+function Board:skip(which)
+    local piece = which or self:getActivePiece()
     if piece then
         while not piece:willCollide(self.bounds.bottom, 'y', 1) and
               not piece:willCollideAny(self.pieces, 'y', 1) do
             piece:move('y', 1)
         end
     end
-    self:newPiece()
+    if not which then
+        self:checkLines()
+        self:newPiece()
+    end
+end
+
+
+function Board:getFilledCoordinates()
+    local filled_coordinates = {}
+    for _, piece in ipairs(self.pieces) do
+        for _, coord in ipairs(piece.coordinates) do
+            table.insert(filled_coordinates, coord)
+        end
+    end
+    return filled_coordinates
+end
+
+function Board:checkLines()
+    local finished_lines = {}
+    local filled_coordinates = self:getFilledCoordinates()
+
+    for y = 0, self.height - 1 do
+        local has_empty_cells = false
+        for x = 0, self.width - 1 do
+            if not kalis.contains(filled_coordinates, {x = x, y = y}) then
+                has_empty_cells = true
+                break
+            end
+        end
+        if not has_empty_cells then
+            print(y)
+            table.insert(finished_lines, y)
+        end
+    end
+
+    for _, y in ipairs(finished_lines) do
+        for x = 0, self.width - 1 do
+            for i = #self.pieces, 1, -1 do
+                print(i)
+                local piece = self.pieces[i]
+                piece:removeCoordinate(x, y)
+                if #piece.coordinates == 0 then
+                    table.remove(self.pieces, i)
+                end
+            end
+        end
+    end
+    for _, piece in ipairs(self.pieces) do
+        self:skip(piece)
+    end
 end
 
 function Board:update(dt)

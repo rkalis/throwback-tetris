@@ -113,6 +113,14 @@ function Piece:getMidpoint()
     return {x = mid_x, y = mid_y}
 end
 
+function Piece:removeCoordinate(x, y)
+    for i, coord in ipairs(self.coordinates) do
+        if coord.x == x and coord.y == y then
+            table.remove(self.coordinates, i)
+        end
+    end
+end
+
 function Piece:move(direction, side)
     for i = 1, #self.coordinates do
         self.coordinates[i][direction] = self.coordinates[i][direction] + side
@@ -122,7 +130,7 @@ end
 function Piece:draw()
     for _, coordinate in ipairs(self.coordinates) do
         local cell = self.board:getCell(coordinate.x, coordinate.y)
-        cell:draw(self.colour)
+        cell:draw(self.colour, coordinate.x, coordinate.y)
     end
 end
 
