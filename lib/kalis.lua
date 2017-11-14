@@ -187,7 +187,7 @@ end
 --  true if element in table, false if not
 function functions.contains(table, element)
   for _, value in pairs(table) do
-    if value == element then
+    if functions.equals(value, element) then
       return true
     end
   end
