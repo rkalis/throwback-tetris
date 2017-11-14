@@ -180,7 +180,6 @@ function Board:step(direction, side)
     if piece then
         if not piece:willCollideAny(self.bounds, direction, side) and
            not piece:willCollideAny(self.pieces, direction, side) then
-
             piece:move(direction, side)
             has_moved = true
         end
@@ -248,7 +247,13 @@ function Board:checkLines()
         end
     end
     for _, piece in ipairs(self.pieces) do
-        self:skip(piece)
+        for i, coord in ipairs(piece.coordinates) do
+            for _, line_number in ipairs(finished_lines) do
+                if coord.y < line_number then
+                    piece.coordinates[i].y = coord.y + 1
+                end
+            end
+        end
     end
 end
 
