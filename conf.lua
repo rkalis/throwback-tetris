@@ -4,9 +4,9 @@ function love.conf(t)
     CELL_SIZE = 30
     NUM_ROWS = 24
     NUM_COLS = 10
-    STATS_HEIGHT = 100
-    WINDOW_WIDTH = CELL_SIZE * NUM_COLS
-    WINDOW_HEIGHT = CELL_SIZE * NUM_ROWS + STATS_HEIGHT
+    STATS_WIDTH = CELL_SIZE * NUM_COLS
+    WINDOW_WIDTH = CELL_SIZE * NUM_COLS + STATS_WIDTH
+    WINDOW_HEIGHT = CELL_SIZE * NUM_ROWS
 
     -- Configuration settings
     t.identity = "Throwback Tetris"

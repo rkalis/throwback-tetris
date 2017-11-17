@@ -63,9 +63,8 @@ local coloursList = {
     {115, 168, 87}
 }
 
-function Board:new(width, height, cell_size, start_of_board)
+function Board:new(width, height, cell_size, start_of_stats)
     local obj = {
-        start_of_board = start_of_board,
         cell_size = cell_size,
         width = width,
         height = height,
@@ -99,8 +98,7 @@ function Board:new(width, height, cell_size, start_of_board)
     for i = 0, height - 1 do
         obj[i] = {}
         for j = 0, width - 1 do
-            obj[i][j] = Cell:new(j * cell_size, i * cell_size + start_of_board,
-                                 cell_size)
+            obj[i][j] = Cell:new(j * cell_size, i * cell_size, cell_size)
         end
     end
 
@@ -159,8 +157,8 @@ end
 
 -- Returns board coordinates for the specified mouse coordinates
 function Board:mouseToBoard(mouse_x, mouse_y)
-    if mouse_y < self.start_of_board then return nil end
-    local board_y = math.floor((mouse_y - self.start_of_board) / self.cell_size)
+    if mouse_y >= self.width * self.cell_size then return nil end
+    local board_y = math.floor(mouse_y / self.cell_size)
     local board_x = math.floor(mouse_x / self.cell_size)
     return board_x, board_y
 end

@@ -2,10 +2,12 @@ local Label = require "src.ui.label"
 local Button = require "src.ui.button"
 local UI = {}
 
-function UI:new(width, height)
+function UI:new(start_x, start_y, end_x, end_y)
+    width = end_x - start_x
+    height = end_y - start_y
     local obj = {
         labels = {
-            time  = Label:new(width * 1/5 - 20, height / 2, "Time: ")
+            time  = Label:new(start_x + width * 1/5 - 20, start_y + height / 8, "Time: ")
         },
         buttons = {
         }

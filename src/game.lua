@@ -16,7 +16,7 @@ function Game:new()
         -- highscores = Highscores:new("highscores_easy.txt",
         --                             "highscores_medium.txt",
         --                             "highscores_hard.txt"),
-        ui = UI:new(WINDOW_WIDTH, STATS_HEIGHT),
+        ui = UI:new(NUM_COLS * CELL_SIZE, 0, NUM_ROWS * CELL_SIZE + STATS_WIDTH, NUM_ROWS * CELL_SIZE),
         board = Board:new(NUM_COLS, NUM_ROWS, CELL_SIZE, STATS_HEIGHT)
     }
 
