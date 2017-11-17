@@ -2,6 +2,7 @@ local game = {}
 
 function game:enter(previous, game)
     self.game = game
+    assets.audio.background_music:play()
 end
 
 function game:update(dt)
