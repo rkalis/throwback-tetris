@@ -2,6 +2,12 @@ local game = {}
 
 function game:enter(previous, game)
     self.game = game
+
+    if self.game.settings.muted then
+        love.audio.setVolume(0)
+    else
+        love.audio.setVolume(self.game.settings.volume)
+    end
     assets.audio.background_music:play()
 end
 

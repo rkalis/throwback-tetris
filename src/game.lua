@@ -1,6 +1,7 @@
 local Board = require "src.board"
 local Highscores = require "src.highscores"
 local UI = require "src.ui.UI"
+local Settings  = require "src.settings"
 
 local Game = {}
 
@@ -17,7 +18,8 @@ function Game:new()
         --                             "highscores_medium.txt",
         --                             "highscores_hard.txt"),
         ui = UI:new(NUM_COLS * CELL_SIZE, 0, NUM_ROWS * CELL_SIZE + STATS_WIDTH, NUM_ROWS * CELL_SIZE),
-        board = Board:new(NUM_COLS, NUM_ROWS, CELL_SIZE, STATS_HEIGHT)
+        board = Board:new(NUM_COLS, NUM_ROWS, CELL_SIZE, STATS_HEIGHT),
+        settings = Settings:new()
     }
 
     setmetatable(obj, self)
