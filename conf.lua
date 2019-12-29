@@ -10,7 +10,7 @@ function love.conf(t)
 
     -- Configuration settings
     t.identity = "Throwback Tetris"
-    t.version = "0.10.2"
+    t.version = "11.3"
     t.console = false
 
     t.window.title          = "Throwback Tetris"

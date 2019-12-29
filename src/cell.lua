@@ -26,12 +26,12 @@ function Cell:draw(colour, x, y)
         love.graphics.rectangle("fill", self.x, self.y, self.size, self.size)
     end
 
-    love.graphics.setColor(100,100,100)
+    love.graphics.setColor(0.4, 0.4, 0.4)
     love.graphics.rectangle("line", self.x, self.y, self.size, self.size)
     if x and y then
         love.graphics.print(x .. ',' .. y, self.x, self.y)
     end
-    love.graphics.setColor(255,255,255)
+    love.graphics.setColor(1, 1, 1)
 end
 
 return Cell

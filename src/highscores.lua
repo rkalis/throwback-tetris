@@ -5,13 +5,13 @@ local Highscores = {}
 -- didn't exist already
 function Highscores:new(easy_fn, medium_fn, hard_fn)
     -- Creates high score files if the don't alreasy exist
-    if not love.filesystem.exists(easy_fn) then
+    if not love.filesystem.getInfo(easy_fn) then
         love.filesystem.write(easy_fn, "")
     end
-    if not love.filesystem.exists(medium_fn) then
+    if not love.filesystem.getInfo(medium_fn) then
         love.filesystem.write(medium_fn, "")
     end
-    if not love.filesystem.exists(hard_fn) then
+    if not love.filesystem.getInfo(hard_fn) then
         love.filesystem.write(hard_fn, "")
     end
     local obj = {
@@ -130,13 +130,13 @@ end
 
 -- TODO: Make this more dynamic
 function Highscores:draw(difficulty)
-    love.graphics.setColor(0,0,0)
+    love.graphics.setColor(0, 0, 0)
     love.graphics.rectangle("line", WINDOW_WIDTH / 2 - 125,
                             WINDOW_HEIGHT / 2 - 200, 250, 400)
-    love.graphics.setColor(200,200,200)
+    love.graphics.setColor(0.8, 0.8, 0.8)
     love.graphics.rectangle("fill", WINDOW_WIDTH / 2 - 125,
                             WINDOW_HEIGHT / 2 - 200, 250, 400)
-    love.graphics.setColor(0,0,0)
+    love.graphics.setColor(0, 0, 0)
     love.graphics.printf("HIGH SCORES:", WINDOW_WIDTH / 2 - 125,
                          WINDOW_HEIGHT / 2 - 190, 250, "center")
     for i = 1, 10 do
@@ -153,7 +153,7 @@ function Highscores:draw(difficulty)
                                 WINDOW_HEIGHT / 2 - 150 + i * 20)
         end
     end
-    love.graphics.setColor(255,255,255)
+    love.graphics.setColor(1, 1, 1)
 end
 
 return Highscores

@@ -20,7 +20,7 @@ function love.load()
     math.random(); math.random(); math.random(); math.random();
 
     -- Setting of the löve environment variables
-    love.graphics.setBackgroundColor(170,170,170)
+    love.graphics.setBackgroundColor(0.66, 0.66, 0.66)
     love.graphics.setFont(love.graphics.newFont(15))
 
     local game = Game:new()

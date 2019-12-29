@@ -40,21 +40,21 @@ function enterHighScores:draw()
     love.graphics.setColor(0,0,0)
     love.graphics.rectangle("line", WINDOW_WIDTH / 2 - 100,
                             WINDOW_HEIGHT / 2 - 50, 200, 100)
-    love.graphics.setColor(200,200,200)
+    love.graphics.setColor(0.8, 0.8, 0.8)
     love.graphics.rectangle("fill", WINDOW_WIDTH / 2 - 100,
                             WINDOW_HEIGHT / 2 - 50, 200, 100)
-    love.graphics.setColor(0,0,0)
+    love.graphics.setColor(0, 0, 0)
     love.graphics.printf("YOUR NAME: ", WINDOW_WIDTH / 2 - 50,
                          WINDOW_HEIGHT / 2 - 30, 100, "center")
     love.graphics.rectangle("line", WINDOW_WIDTH / 2 - 50,
                             WINDOW_HEIGHT / 2 - 10, 100, 20)
-    love.graphics.setColor(255,255,255)
+    love.graphics.setColor(1, 1, 1)
     love.graphics.rectangle("fill", WINDOW_WIDTH / 2 - 50,
                             WINDOW_HEIGHT / 2 - 10, 100, 20)
-    love.graphics.setColor(0,0,0)
+    love.graphics.setColor(0, 0, 0)
     love.graphics.printf(self.input, WINDOW_WIDTH / 2 - 49,
                          WINDOW_HEIGHT / 2 - 10, 98, "left")
-    love.graphics.setColor(255,255,255)
+    love.graphics.setColor(1, 1, 1)
 end
 
 return enterHighScores
