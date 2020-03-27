@@ -1,5 +1,5 @@
 local Board = require "src.board"
-local UI = require "src.ui.UI"
+local Sidebar = require "src.ui.sidebar"
 local Settings  = require "src.settings"
 local Game = {}
 
@@ -15,8 +15,12 @@ function Game:new()
         step_interval_time = 20,
         move_interval = 0.1,
         move_interval_time = 0,
-        difficulty = "medium",
-        ui = UI:new(NUM_COLS * CELL_SIZE, 0, NUM_ROWS * CELL_SIZE + STATS_WIDTH, NUM_ROWS * CELL_SIZE),
+        sidebar = Sidebar:new(
+            NUM_COLS * CELL_SIZE,
+            0,
+            NUM_COLS * CELL_SIZE + STATS_WIDTH,
+            NUM_ROWS * CELL_SIZE
+        ),
         board = Board:new(NUM_COLS, NUM_ROWS, CELL_SIZE, STATS_HEIGHT),
         settings = Settings:new()
     }

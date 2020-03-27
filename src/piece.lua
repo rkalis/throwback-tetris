@@ -11,6 +11,51 @@ local rounding_functions = {
     { x = math.floor, y = math.ceil }
 }
 
+-- Colours and starting coordinates of the different predefined pieces
+local piecePrototypes = {
+    -- xxxx (cyan)
+    {
+        coordinates = {{ x = 3, y = 0 }, { x = 4, y = 0 }, { x = 5, y = 0 }, { x = 6, y = 0 }},
+        colour = {0.41, 1.00, 0.93}
+    },
+    -- xxx (orange)
+    -- x
+    {
+        coordinates = {{ x = 3, y = 0 }, { x = 4, y = 0 }, { x = 5, y = 0 }, { x = 3, y = 1 }},
+        colour = {0.99, 0.59, 0.13}
+    },
+    -- xxx (blue)
+    --   x
+    {
+        coordinates = {{ x = 3, y = 0 }, { x = 4, y = 0 }, { x = 5, y = 0 }, { x = 5, y = 1 }},
+        colour = {0.03, 0.39, 1.00}
+    },
+    -- xxx (purple)
+    --  x
+    {
+        coordinates = {{ x = 3, y = 0 }, { x = 4, y = 0 }, { x = 5, y = 0 }, { x = 4, y = 1 }},
+        colour = {0.86, 0.20, 0.97}
+    },
+    --  xx (green)
+    -- xx
+    {
+        coordinates = {{ x = 4, y = 0 }, { x = 5, y = 0 }, { x = 3, y = 1 }, { x = 4, y = 1 }},
+        colour = {0.33, 0.98, 0.28}
+    },
+    -- xx  (red)
+    --  xx
+    {
+        coordinates = {{ x = 3, y = 0 }, { x = 4, y = 0 }, { x = 4, y = 1 }, { x = 5, y = 1 }},
+        colour = {1.00, 0.27, 0.23}
+    },
+    --  xx (yellow)
+    --  xx
+    {
+        coordinates = {{ x = 4, y = 0 }, { x = 5, y = 0 }, { x = 4, y = 1 }, { x = 5, y = 1 }},
+        colour = {1.00, 0.93, 0.41}
+    }
+}
+
 -- Initialise a piece
 -- @Arguments
 --  board       - The board this piece belongs to
@@ -25,10 +70,14 @@ function Piece:new(board, coordinates, colour)
         colour = colour,
         rounding_step = 1
     }
-    print(coordinates[1].x, coordinates[1].y)
     setmetatable(obj, self)
     self.__index = self
     return obj
+end
+
+function Piece.generate(board)
+    local prototype = kalis.copy(piecePrototypes[math.random(#piecePrototypes)])
+    return Piece:new(board, prototype.coordinates, prototype.colour)
 end
 
 -- Check whether two pieces have overlapping coordinates

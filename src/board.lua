@@ -4,52 +4,6 @@ local kalis = require "lib.kalis"
 local Board = {}
 
 
--- Colours and starting coordinates of the different pieces
-local piecePrototypes = {
-    -- xxxx (cyan)
-    {
-        coordinates = {{ x = 3, y = 4 }, { x = 4, y = 4 }, { x = 5, y = 4 }, { x = 6, y = 4 }},
-        colour = {0.41, 1.00, 0.93}
-    },
-    -- xxx (orange)
-    -- x
-    {
-        coordinates = {{ x = 3, y = 4 }, { x = 4, y = 4 }, { x = 5, y = 4 }, { x = 3, y = 5 }},
-        colour = {0.99, 0.59, 0.13}
-    },
-    -- xxx (blue)
-    --   x
-    {
-        coordinates = {{ x = 3, y = 4 }, { x = 4, y = 4 }, { x = 5, y = 4 }, { x = 5, y = 5 }},
-        colour = {0.03, 0.39, 1.00}
-    },
-    -- xxx (purple)
-    --  x
-    {
-        coordinates = {{ x = 3, y = 4 }, { x = 4, y = 4 }, { x = 5, y = 4 }, { x = 4, y = 5 }},
-        colour = {0.86, 0.20, 0.97}
-    },
-    --  xx (green)
-    -- xx
-    {
-        coordinates = {{ x = 4, y = 4 }, { x = 5, y = 4 }, { x = 3, y = 5 }, { x = 4, y = 5 }},
-        colour = {0.33, 0.98, 0.28}
-    },
-    -- xx  (red)
-    --  xx
-    {
-        coordinates = {{ x = 3, y = 4 }, { x = 4, y = 4 }, { x = 4, y = 5 }, { x = 5, y = 5 }},
-        colour = {1.00, 0.27, 0.23}
-    },
-    --  xx (yellow)
-    --  xx
-    {
-        coordinates = {{ x = 4, y = 4 }, { x = 5, y = 4 }, { x = 4, y = 5 }, { x = 5, y = 5 }},
-        colour = {1.00, 0.93, 0.41}
-    }
-
-}
-
 -- Initialise the board
 -- @Arguments
 --  width          - The width of the board in cells
@@ -97,23 +51,18 @@ function Board:new(width, height, cell_size, start_of_stats)
         end
     end
 
+    obj.next_piece = Piece.generate(obj)
+
     setmetatable(obj, self)
     self.__index = self
     return obj
 end
 
--- Generates a new random piece on the board
--- Adds the new piece to the board's list of pieces
+-- Puts next_piece into the board
+-- Generates a new random piece for next_piece
 function Board:newPiece()
-    local prototype = kalis.copy(piecePrototypes[math.random(#piecePrototypes)])
-    table.insert(
-        self.pieces,
-        Piece:new(
-            self,
-            prototype.coordinates,
-            prototype.colour
-        )
-    )
+    table.insert(self.pieces, self.next_piece)
+    self.next_piece = Piece.generate(self)
 end
 
 -- Returns the currently active (latest) piece

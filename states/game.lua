@@ -35,7 +35,7 @@ function game:update(dt)
 end
 
 function game:draw()
-    self.game.ui:draw(math.floor(self.game.time))
+    self.game.sidebar:draw(math.floor(self.game.time), self.game.board.next_piece)
 end
 
 function game:keypressed(key)
@@ -51,10 +51,10 @@ function game:keypressed(key)
     -- Tap to move
     elseif key == 'left' then
         self.game.board:move('x', -1)
-        self.game.move_interval_time = 0
+        self.game.move_interval_time = -0.1
     elseif key == 'right' then
         self.game.board:move('x', 1)
-        self.game.move_interval_time = 0
+        self.game.move_interval_time = -0.1
     end
 end
 
