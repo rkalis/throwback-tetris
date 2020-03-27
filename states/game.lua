@@ -18,9 +18,10 @@ function game:update(dt)
 
     if self.game.step_interval_time > self.game.step_interval then
         self.game.step_interval_time = 0
-        self.game.board:step('y', 1)
+        self.game.board:step()
     end
 
+    -- Press + hold to move
     if self.game.move_interval_time > self.game.move_interval then
         self.game.move_interval_time = 0
 
@@ -43,9 +44,17 @@ function game:keypressed(key)
     elseif key == 'down' then
         self.game.step_interval = self.game.step_interval / 10
     elseif key == 'up' then
-        if self.game.board:getActivePiece():canRotate(1) then
-            self.game.board:getActivePiece():rotate(1)
+        local piece = self.game.board:getActivePiece()
+        if piece:canRotate() then
+            piece:rotate()
         end
+    -- Tap to move
+    elseif key == 'left' then
+        self.game.board:move('x', -1)
+        self.game.move_interval_time = 0
+    elseif key == 'right' then
+        self.game.board:move('x', 1)
+        self.game.move_interval_time = 0
     end
 end
 

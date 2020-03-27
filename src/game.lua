@@ -1,10 +1,12 @@
 local Board = require "src.board"
-local Highscores = require "src.highscores"
 local UI = require "src.ui.UI"
 local Settings  = require "src.settings"
-
 local Game = {}
 
+
+-- Initialise the game (some config can be set here)
+-- @Returns
+--  the initialised game object
 function Game:new()
     local obj = {
         start_time = 0,
@@ -14,9 +16,6 @@ function Game:new()
         move_interval = 0.1,
         move_interval_time = 0,
         difficulty = "medium",
-        -- highscores = Highscores:new("highscores_easy.txt",
-        --                             "highscores_medium.txt",
-        --                             "highscores_hard.txt"),
         ui = UI:new(NUM_COLS * CELL_SIZE, 0, NUM_ROWS * CELL_SIZE + STATS_WIDTH, NUM_ROWS * CELL_SIZE),
         board = Board:new(NUM_COLS, NUM_ROWS, CELL_SIZE, STATS_HEIGHT),
         settings = Settings:new()

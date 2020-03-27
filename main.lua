@@ -1,16 +1,13 @@
 -- throwback-tetris/main.lua
 
+---- GLOBALS ----
 assets = require "assets.assets"
 Gamestate = require "lib.gamestate"
 
 states = {
-    -- menu = require "states.menu",
-    -- pregame = require "states.pregame",
     game = require "states.game"
-    -- endgame = require "states.endgame",
-    -- enterHighScores = require "states.enterHighScores",
-    -- displayHighScores = require "states.displayHighScores"
 }
+-----------------
 
 local Game = require "src.game"
 
@@ -31,10 +28,5 @@ end
 
 function love.draw()
     local game = Gamestate:current().game
-
     game.board:draw()
-
-    for _, button in pairs(game.ui.buttons) do
-        button:draw()
-    end
 end

@@ -1,5 +1,12 @@
 local Settings = {}
 
+
+-- Initialise the settings
+-- @Arguments
+--  muted  - Whether the volume should be muted
+--  volume - The volume level
+-- @Returns
+--  the initialised settings object
 function Settings:new(muted, volume)
     local obj = {
         muted = muted or false,
