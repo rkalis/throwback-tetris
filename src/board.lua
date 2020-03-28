@@ -9,15 +9,13 @@ local Board = {}
 --  width          - The width of the board in cells
 --  height         - The height of the board in cells
 --  cell_size      - The size of a single cell on the board
---  start_of_stats - The coordinates of the sidebar on the board
 -- @Returns
 --  the initialised board object
-function Board:new(width, height, cell_size, start_of_stats)
+function Board:new(width, height, cell_size)
     local obj = {
         cell_size = cell_size,
         width = width,
         height = height,
-        pieces = {},
         bounds = {
             bottom = {
                 coordinates = {}
@@ -31,7 +29,10 @@ function Board:new(width, height, cell_size, start_of_stats)
             right = {
                 coordinates = {}
             }
-        }
+        },
+        pieces = {},
+        score = 0,
+        back_to_back = 0,
     }
 
     for i = 0, width - 1 do
@@ -138,11 +139,7 @@ function Board:step()
         end
     end
 
-    if not has_moved then
-        self:clearLines()
-        self:newPiece()
-    end
-
+    if not has_moved then self:onPieceLanded() end
     return has_moved
 end
 
@@ -164,13 +161,23 @@ function Board:getOccupiedCoords()
     return occupied_coords
 end
 
--- Clear any fully occupied lines
-function Board:clearLines()
-    local finished_lines = {}
+-- Called after a piece has landed
+-- Clears and scores any filled lines, and generates the next piece
+function Board:onPieceLanded()
+    local filled_lines = self:getFilledLines()
+    self:clearLines(filled_lines)
+    self:scoreLines(#filled_lines)
+    self:newPiece()
+end
+
+-- @Returns
+--  all lines that are completely filled
+function Board:getFilledLines()
     local occupied_coords = self:getOccupiedCoords()
+    local filled_lines = {}
 
     -- Loop through all cells in all lines to check if they're occupied
-    -- Add fully occupied lines to finished_lines
+    -- Add fully occupied lines to filled_lines
     for y = 0, self.height - 1 do
         local has_empty_cells = false
         for x = 0, self.width - 1 do
@@ -180,13 +187,19 @@ function Board:clearLines()
             end
         end
         if not has_empty_cells then
-            table.insert(finished_lines, y)
+            table.insert(filled_lines, y)
         end
     end
+    return filled_lines
+end
 
+-- Clear any provided line numbers
+-- @Arguments
+--  filled_lines - A list of line numbers to be cleared
+function Board:clearLines(filled_lines)
     -- Try to remove all coordinates in finished lines from all pieces on the board
     -- If pieces have no coordinates left, they're cleaned
-    for _, y in ipairs(finished_lines) do
+    for _, y in ipairs(filled_lines) do
         for x = 0, self.width - 1 do
             for i = #self.pieces, 1, -1 do
                 local piece = self.pieces[i]
@@ -197,16 +210,35 @@ function Board:clearLines()
             end
         end
     end
-    -- Advance the remaining pieces to account for the removed line
+
+    -- Advance the remaining pieces to account for the removed lines
     for _, piece in ipairs(self.pieces) do
         for i, coord in ipairs(piece.coordinates) do
-            for _, line_number in ipairs(finished_lines) do
+            for _, line_number in ipairs(filled_lines) do
                 if coord.y < line_number then
                     piece.coordinates[i].y = coord.y + 1
                 end
             end
         end
     end
+end
+
+-- Updates board score according to the number of lines cleared
+-- @Arguments
+--  num_lines - The number of lines cleared
+function Board:scoreLines(num_lines)
+    if (num_lines <= 0) then return end
+
+    -- Update back-to-back tetris count
+    if num_lines >= 4 then
+        self.back_to_back = self.back_to_back + 1
+    else
+        self.back_to_back = 0
+    end
+
+    -- Score 100 per line, plus 100 per back-to-back tetris
+    local added_score = num_lines * 100 + self.back_to_back * 100
+    self.score = self.score + added_score
 end
 
 function Board:update(dt)

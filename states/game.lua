@@ -35,7 +35,10 @@ function game:update(dt)
 end
 
 function game:draw()
-    self.game.sidebar:draw(math.floor(self.game.time), self.game.board.next_piece)
+    local next_piece = self.game.board.next_piece
+    local time = math.floor(self.game.time)
+    local score = self.game.board.score
+    self.game.sidebar:draw(next_piece, time, score)
 end
 
 function game:keypressed(key)

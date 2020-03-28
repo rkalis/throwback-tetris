@@ -1,4 +1,3 @@
-local kalis = require "lib.kalis"
 local Cell = {}
 
 

@@ -22,7 +22,8 @@ function Sidebar:new(start_x, start_y, end_x, end_y)
 
     local obj = {
         labels = {
-            time  = Label:new(next_piece_x, next_piece_y + cell_size * 4 + 20, "Time: ")
+            time = Label:new(next_piece_x, next_piece_y + cell_size * 4 + 20, "Time: "),
+            score = Label:new(next_piece_x, next_piece_y + cell_size * 4 + 40, "Score: ")
         },
         cells = {}
     }
@@ -45,8 +46,10 @@ function Sidebar:new(start_x, start_y, end_x, end_y)
 end
 
 -- Draw the Sidebar with the time filled in
-function Sidebar:draw(time, next_piece)
+function Sidebar:draw(next_piece, time, score)
     self.labels.time:draw(time)
+    self.labels.score:draw(score)
+
     for _, row in kalis.ipairs(self.cells) do
         for _, cell in kalis.ipairs(row) do
             cell:draw()

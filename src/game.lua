@@ -21,7 +21,7 @@ function Game:new()
             NUM_COLS * CELL_SIZE + STATS_WIDTH,
             NUM_ROWS * CELL_SIZE
         ),
-        board = Board:new(NUM_COLS, NUM_ROWS, CELL_SIZE, STATS_HEIGHT),
+        board = Board:new(NUM_COLS, NUM_ROWS, CELL_SIZE),
         settings = Settings:new()
     }
 

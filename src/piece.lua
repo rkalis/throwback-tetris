@@ -1,5 +1,7 @@
 local kalis = require "lib.kalis"
-local Piece = {}
+local Piece = {
+    bag = {}
+}
 
 
 -- The rounding functions to use when rotating depending on what step (1-4)
@@ -15,25 +17,25 @@ local rounding_functions = {
 local piecePrototypes = {
     -- xxxx (cyan)
     {
-        coordinates = {{ x = 3, y = 0 }, { x = 4, y = 0 }, { x = 5, y = 0 }, { x = 6, y = 0 }},
+        coordinates = {{ x = 3, y = 1 }, { x = 4, y = 1 }, { x = 5, y = 1 }, { x = 6, y = 1 }},
         colour = {0.41, 1.00, 0.93}
     },
-    -- xxx (orange)
-    -- x
+    --   x (orange)
+    -- xxx
     {
-        coordinates = {{ x = 3, y = 0 }, { x = 4, y = 0 }, { x = 5, y = 0 }, { x = 3, y = 1 }},
+        coordinates = {{ x = 5, y = 0 }, { x = 3, y = 1 }, { x = 4, y = 1 }, { x = 5, y = 1 }},
         colour = {0.99, 0.59, 0.13}
     },
-    -- xxx (blue)
-    --   x
+    -- x   (blue)
+    -- xxx
     {
-        coordinates = {{ x = 3, y = 0 }, { x = 4, y = 0 }, { x = 5, y = 0 }, { x = 5, y = 1 }},
+        coordinates = {{ x = 3, y = 0 }, { x = 3, y = 1 }, { x = 4, y = 1 }, { x = 5, y = 1 }},
         colour = {0.03, 0.39, 1.00}
     },
-    -- xxx (purple)
-    --  x
+    --  x  (purple)
+    -- xxx
     {
-        coordinates = {{ x = 3, y = 0 }, { x = 4, y = 0 }, { x = 5, y = 0 }, { x = 4, y = 1 }},
+        coordinates = {{ x = 4, y = 0 }, { x = 3, y = 1 }, { x = 4, y = 1 }, { x = 5, y = 1 }},
         colour = {0.86, 0.20, 0.97}
     },
     --  xx (green)
@@ -68,7 +70,7 @@ function Piece:new(board, coordinates, colour)
         board = board,
         coordinates = coordinates,
         colour = colour,
-        rounding_step = 1
+        rounding_step = 1,
     }
     setmetatable(obj, self)
     self.__index = self
@@ -76,7 +78,8 @@ function Piece:new(board, coordinates, colour)
 end
 
 function Piece.generate(board)
-    local prototype = kalis.copy(piecePrototypes[math.random(#piecePrototypes)])
+    if #Piece.bag == 0 then Piece.bag = kalis.copy(piecePrototypes) end
+    local prototype = table.remove(Piece.bag, math.random(#Piece.bag))
     return Piece:new(board, prototype.coordinates, prototype.colour)
 end
 
@@ -86,7 +89,7 @@ end
 --  o2 - The other piece
 -- @Returns
 --  true if o1 and o2 have overlapping coordinates, false if not
-function areColliding(o1, o2)
+local function areColliding(o1, o2)
     if o1 == o2 then return false end
     for _, coord in ipairs(o1.coordinates) do
         for _, other_coord in ipairs(o2.coordinates) do
