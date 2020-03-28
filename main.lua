@@ -1,10 +1,10 @@
 -- throwback-tetris/main.lua
 
 ---- GLOBALS ----
-assets = require "assets.assets"
+Assets = require "assets.assets"
 Gamestate = require "lib.gamestate"
 
-states = {
+States = {
     game = require "states.game"
 }
 -----------------
@@ -23,7 +23,7 @@ function love.load()
     local game = Game:new()
 
     Gamestate.registerEvents()
-    Gamestate.switch(states.game, game)
+    Gamestate.switch(States.game, game)
 end
 
 function love.draw()

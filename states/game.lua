@@ -8,7 +8,7 @@ function game:enter(previous, game)
     else
         love.audio.setVolume(self.game.settings.volume)
     end
-    assets.audio.background_music:play()
+    Assets.audio.background_music:play()
 end
 
 function game:update(dt)

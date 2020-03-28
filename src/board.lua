@@ -1,77 +1,65 @@
 local Cell = require "src.cell"
 local Piece = require "src.piece"
 local kalis = require "lib.kalis"
-local Board = {}
+local class = require "lib.middleclass"
 
 
--- Initialise the board
--- @Arguments
---  width          - The width of the board in cells
---  height         - The height of the board in cells
---  cell_size      - The size of a single cell on the board
--- @Returns
---  the initialised board object
-function Board:new(width, height, cell_size)
-    local obj = {
-        cell_size = cell_size,
-        width = width,
-        height = height,
-        bounds = {
-            bottom = {
-                coordinates = {}
-            },
-            top = {
-                coordinates = {}
-            },
-            left = {
-                coordinates = {}
-            },
-            right = {
-                coordinates = {}
-            }
-        },
-        pieces = {},
-        score = 0,
-        back_to_back = 0,
+--- @class Board
+--- @field new fun(self: Board, width: integer, height: integer, cell_size: integer)
+local Board = class("Board")
+
+--- @param width integer @ The width of the board in cells
+--- @param height integer @ The height of the board in cells
+--- @param cell_size integer @ The size of a single cell on the board in pixels
+function Board:initialize(width, height, cell_size)
+    self.cell_size = cell_size
+    self.width = width
+    self.height = height
+    self.pieces = {}
+    self.score = 0
+    self.back_to_back = 0
+    self.next_piece = Piece.generate(self)
+
+    -- initialise bounds
+    self.bounds = {
+        bottom = { coordinates = {} },
+        top = { coordinates = {} },
+        left = { coordinates = {} },
+        right = { coordinates = {} }
     }
 
     for i = 0, width - 1 do
-        table.insert(obj.bounds.bottom.coordinates, {x = i, y = height})
-        table.insert(obj.bounds.top.coordinates, {x = i, y = -1})
+        table.insert(self.bounds.bottom.coordinates, {x = i, y = height})
+        table.insert(self.bounds.top.coordinates, {x = i, y = -1})
     end
     for i = 0, height - 1 do
-        table.insert(obj.bounds.left.coordinates, {x = -1, y = i})
-        table.insert(obj.bounds.right.coordinates, {x = width, y = i})
+        table.insert(self.bounds.left.coordinates, {x = -1, y = i})
+        table.insert(self.bounds.right.coordinates, {x = width, y = i})
     end
 
     -- Initialise cells
     for i = 0, height - 1 do
-        obj[i] = {}
+        self[i] = {}
         for j = 0, width - 1 do
-            obj[i][j] = Cell:new(j * cell_size, i * cell_size, cell_size)
+            self[i][j] = Cell:new(j * cell_size, i * cell_size, cell_size)
         end
     end
-
-    obj.next_piece = Piece.generate(obj)
-
-    setmetatable(obj, self)
-    self.__index = self
-    return obj
 end
 
--- Puts next_piece into the board
--- Generates a new random piece for next_piece
+--- Puts next_piece into the board. Generates a new random piece for next_piece.
 function Board:newPiece()
     table.insert(self.pieces, self.next_piece)
     self.next_piece = Piece.generate(self)
 end
 
--- Returns the currently active (latest) piece
+--- Returns the currently active (latest) piece
+--- @return Piece @ The currently active piece
 function Board:getActivePiece()
     return self.pieces[#self.pieces]
 end
 
--- Returns an iterator over all cells in the board
+--- Returns an iterator over all cells in the board
+--- @return fun(t: table): number, Cell @ Iterator over all cells in the board
 function Board:cells()
     return coroutine.wrap(
         function()
@@ -83,37 +71,45 @@ function Board:cells()
         end)
 end
 
--- Returns a cell found at board coordinates (x, y)
+--- Returns a cell found at board coordinates (`x`, `y`)
+--- @param x integer @ The x coordinate of the cell
+--- @param y integer @ The y coordinate of the cell
+--- @return Cell @ The found cell
 function Board:getCell(x, y)
     if not x or not y then return nil end
     if x < 0 or x > self.width or y < 0 or y > self.height then return nil end
     return self[y][x]
 end
 
--- Returns a random cell
+--- Returns a random cell
+--- @return Cell @ A random cell in the board
 function Board:getRandomCell()
     local random_row = self[math.random(0, #self)]
     return random_row[math.random(0, #random_row)]
 end
 
--- Returns a cell found at mouse coordinates (mouse_x, mouse_y)
-function Board:mouseToCell(mouse_x, mouse_y)
-    return self:getCell(self:mouseToBoard(mouse_x, mouse_y))
+--- Returns a cell found at pixel coordinates (`x`, `y`)
+--- @param x integer @ The pixel's x coordinate
+--- @param y integer @ The pixel's y coordinate
+--- @return Cell @ Cell found at pixel coordinates (`x`, `y`)
+function Board:pixelToCell(x, y)
+    return self:getCell(self:pixelToBoard(x, y))
 end
 
--- Returns board coordinates (board_x, board_y)
--- for the specified mouse coordinates (mouse_x, mouse_y)
-function Board:mouseToBoard(mouse_x, mouse_y)
-    if mouse_y >= self.width * self.cell_size then return nil end
-    local board_y = math.floor(mouse_y / self.cell_size)
-    local board_x = math.floor(mouse_x / self.cell_size)
+--- Returns board coordinates for pixel coordinates (`x`, `y`)
+--- @param x integer @ The pixel's x coordinate
+--- @param y integer @ The pixel's y coordinate
+--- @return integer, integer @ Corresponding board coordinates
+function Board:pixelToBoard(x, y)
+    if y >= self.width * self.cell_size then return nil end
+    local board_y = math.floor(y / self.cell_size)
+    local board_x = math.floor(x / self.cell_size)
     return board_x, board_y
 end
 
--- Move the active piece along an axis
--- @Arguments
---  axis  - 'x' or 'y'
---  delta - -1 or 1
+--- Move the active piece along an axis
+--- @param axis AxisEnum @ The axis of the move
+--- @param delta integer @ The size and direction of the move
 function Board:move(axis, delta)
     local piece = self:getActivePiece()
     if piece then
@@ -124,13 +120,13 @@ function Board:move(axis, delta)
     end
 end
 
--- Advances the active piece one step along the y axis
--- Generates a new piece when the active piece can't advance further
--- @Returns
---  true if the piece moved, false if not
+--- Advances the active one step along the y axis. Generates a new piece when
+--- the active piece can't advance further.
+--- @return boolean @ true if the piece moved, false if not
 function Board:step()
     local has_moved = false
     local piece = self:getActivePiece()
+
     if piece then
         if not piece:willCollide(self.bounds.bottom, 'y', 1) and
            not piece:willCollideAny(self.pieces, 'y', 1) then
@@ -140,17 +136,18 @@ function Board:step()
     end
 
     if not has_moved then self:onPieceLanded() end
+
     return has_moved
 end
 
--- Advances the active piece until it can't advance further
+--- Advances the active piece until it can't advance further
 function Board:skip()
     local has_moved = true
-    local piece = self:getActivePiece()
     while has_moved do has_moved = self:step() end
 end
 
--- Returns all board coordinates that are currenlly occupied by a piece
+--- Returns all board coordinates that are currenlly occupied by a piece
+--- @return table[] @ List of all occupied coordinates
 function Board:getOccupiedCoords()
     local occupied_coords = {}
     for _, piece in ipairs(self.pieces) do
@@ -161,8 +158,8 @@ function Board:getOccupiedCoords()
     return occupied_coords
 end
 
--- Called after a piece has landed
--- Clears and scores any filled lines, and generates the next piece
+--- Called after a piece has landed. Clears and scores any filled lines,
+--- and generates the next piece
 function Board:onPieceLanded()
     local filled_lines = self:getFilledLines()
     self:clearLines(filled_lines)
@@ -170,8 +167,8 @@ function Board:onPieceLanded()
     self:newPiece()
 end
 
--- @Returns
---  all lines that are completely filled
+--- Returns line numbers for all completely filled lines
+--- @return integer[] @ All line numbers that are completely filled
 function Board:getFilledLines()
     local occupied_coords = self:getOccupiedCoords()
     local filled_lines = {}
@@ -193,9 +190,8 @@ function Board:getFilledLines()
     return filled_lines
 end
 
--- Clear any provided line numbers
--- @Arguments
---  filled_lines - A list of line numbers to be cleared
+--- Clear all provided line numbers
+--- @param filled_lines integer[] @ A list of line numbers to be cleared
 function Board:clearLines(filled_lines)
     -- Try to remove all coordinates in finished lines from all pieces on the board
     -- If pieces have no coordinates left, they're cleaned
@@ -223,9 +219,8 @@ function Board:clearLines(filled_lines)
     end
 end
 
--- Updates board score according to the number of lines cleared
--- @Arguments
---  num_lines - The number of lines cleared
+--- Updates board score according to the number of lines cleared
+--- @param num_lines integer @ The number of lines that were cleared
 function Board:scoreLines(num_lines)
     if (num_lines <= 0) then return end
 
@@ -241,9 +236,7 @@ function Board:scoreLines(num_lines)
     self.score = self.score + added_score
 end
 
-function Board:update(dt)
-end
-
+--- Draws the board
 function Board:draw()
     for _, piece in ipairs(self.pieces) do
         piece:draw()

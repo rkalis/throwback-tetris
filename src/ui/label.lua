@@ -1,26 +1,21 @@
-local Label = {}
+local class = require "lib.middleclass"
 
--- Initialise a label
--- @Arguments
---  x    - The x coordinate of the label
---  y    - The y coordinate of the label
---  text - The text deisplayed on the label
--- @Returns
---  the initialised label object
-function Label:new(x, y, text)
-    local obj = {
-        x = x,
-        y = y,
-        text = text
-    }
-    setmetatable(obj, self)
-    self.__index = self
-    return obj
+
+--- @class Label
+--- @field new fun(self: Label, x: integer, y: integer, text: string)
+local Label = class("Label")
+
+--- @param x integer @ The x coordinate of the label
+--- @param y integer @ The y coordinate of the label
+--- @param text string @ The text to be displayed on the label
+function Label:initialize(x, y, text)
+    self.x = x
+    self.y = y
+    self.text = text
 end
 
--- Draws the label, with potentially additional text
--- @Arguments
---  value? - Additional text to be displayed beside the label
+--- Draws the label with potentially additional text
+--- @param value string @ Additional text to be displayed beside the label text
 function Label:draw(value)
     local val = value or ""
     love.graphics.setColor(0, 0, 0)

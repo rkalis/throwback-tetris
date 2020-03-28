@@ -1,36 +1,28 @@
-local Cell = {}
+local class = require "lib.middleclass"
 
 
--- Initialise a cell
--- @Arguments
---  x    - The x coord of the cell
---  y    - The y coord dof the cell
---  size - The size of the cell
--- @Returns
---  the initialised cell object
-function Cell:new(x, y, size)
-    local obj = {
-        x = x,
-        y = y,
-        size = size
-    }
-    setmetatable(obj, self)
-    self.__index = self
-    return obj
+--- @class Cell
+--- @field new fun(self: Cell, x: integer, y: integer, size: integer)
+local Cell = class("Cell")
+
+--- @param x integer @ The x coordinate of the cell
+--- @param y integer @ The y coordinate of the cell
+--- @param size integer @ The size of the cell in pixels
+function Cell:initialize(x, y, size)
+    self.x = x
+    self.y = y
+    self.size = size
 end
 
--- Checks whether two cells occupy the same coordinates
--- @Arguments
---  other - The other cell
--- @Returns
---  true if their coordinates match, false if not
+--- Checks if two cells occupy the same coordinates
+--- @param other Cell @ The other cell
+--- @return boolean @ true if their coordinates match, false if not
 function Cell:equals(other)
     return self.x == other.x and self.y == other.y
 end
 
--- Draw the cell (optionally coloured)
--- @Arguments
---  colour? - Specifies the colour to draw the cell
+--- Draws the cell (optionally coloured)
+--- @param colour table @ The colour to draw the cell with (default none)
 function Cell:draw(colour)
     if colour then
         love.graphics.setColor(colour)
