@@ -19,7 +19,8 @@ function Sidebar:initialize(left, right)
 
   self.labels = {
     time = Label:new(next_piece_x, next_piece_y + cell_size * 4 + 20, "Time: "),
-    score = Label:new(next_piece_x, next_piece_y + cell_size * 4 + 40, "Score: ")
+    score = Label:new(next_piece_x, next_piece_y + cell_size * 4 + 40, "Score: "),
+    level = Label:new(next_piece_x, next_piece_y + cell_size * 4 + 60, "Level: ")
   }
 
   -- Initialise next_piece cells
@@ -40,9 +41,11 @@ end
 --- @param next_piece Piece @ The next piece to be spawned
 --- @param time integer @ The current game time
 --- @param score integer @ The current score
-function Sidebar:draw(next_piece, time, score)
+--- @param level integer @ The current level
+function Sidebar:draw(next_piece, time, score, level)
   self.labels.time:draw(time)
   self.labels.score:draw(score)
+  self.labels.level:draw(level)
 
   for _, row in kalis.ipairs(self.cells) do
     for _, cell in kalis.ipairs(row) do

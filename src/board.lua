@@ -5,19 +5,19 @@ local class = require "lib.middleclass"
 
 
 --- @class Board
---- @field new fun(self: Board, width: integer, height: integer, cell_size: integer)
+--- @field new fun(self: Board, game: Game, width: integer, height: integer, cell_size: integer)
 local Board = class("Board")
 
+--- @param game Game @ The corresponding game object
 --- @param width integer @ The width of the board in cells
 --- @param height integer @ The height of the board in cells
 --- @param cell_size integer @ The size of a single cell on the board in pixels
-function Board:initialize(width, height, cell_size)
+function Board:initialize(game, width, height, cell_size)
+  self.game = game
   self.cell_size = cell_size
   self.width = width
   self.height = height
   self.pieces = {}
-  self.score = 0
-  self.back_to_back = 0
   self.next_piece = Piece.generate(self)
 
   -- initialise bounds
@@ -163,7 +163,7 @@ end
 function Board:onPieceLanded()
   local filled_lines = self:getFilledLines()
   self:clearLines(filled_lines)
-  self:scoreLines(#filled_lines)
+  if (#filled_lines > 0) then self.game:onLinesCleared(#filled_lines) end
   self:newPiece()
 end
 
@@ -217,23 +217,6 @@ function Board:clearLines(filled_lines)
       end
     end
   end
-end
-
---- Updates board score according to the number of lines cleared
---- @param num_lines integer @ The number of lines that were cleared
-function Board:scoreLines(num_lines)
-  if (num_lines <= 0) then return end
-
-  -- Update back-to-back tetris count
-  if num_lines >= 4 then
-    self.back_to_back = self.back_to_back + 1
-  else
-    self.back_to_back = 0
-  end
-
-  -- Score 100 per line, plus 100 per back-to-back tetris
-  local added_score = num_lines * 100 + self.back_to_back * 100
-  self.score = self.score + added_score
 end
 
 --- Draws the board
