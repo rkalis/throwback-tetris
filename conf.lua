@@ -1,7 +1,7 @@
 function love.conf(t)
   -- Global variables
   CELL_SIZE = 30
-  NUM_ROWS = 20
+  NUM_ROWS = 22
   NUM_COLS = 10
   STATS_WIDTH = CELL_SIZE * NUM_COLS / 2
   WINDOW_WIDTH = CELL_SIZE * NUM_COLS + STATS_WIDTH

@@ -5,7 +5,7 @@ Assets = require "assets.assets"
 Gamestate = require "lib.gamestate"
 
 States = {
-  game = require "states.game"
+  game = require "src.states.game"
 }
 -----------------
 
