@@ -42,5 +42,5 @@ function love.conf(t)
   t.modules.system   = true
   t.modules.timer    = true
   t.modules.window   = true
-  t.modules.thread   = true
+  t.modules.thread   = false
 end
